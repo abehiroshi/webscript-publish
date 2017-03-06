@@ -1,0 +1,5 @@
+--pcall(lease.release, 'queue/history/log/push')
+--pcall(lease.release, 'queue/history/log/pop')
+
+local history = require 'abehiroshi/webscriptio-lib/history'
+history.create('log'):clear()

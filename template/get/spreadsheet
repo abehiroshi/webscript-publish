@@ -1,0 +1,23 @@
+(require 'abehiroshi/webscriptio-lib/logdriver').load('log')
+local memory = require 'abehiroshi/webscriptio-lib/memory'
+local config = memory.create('config')
+
+local google = require 'abehiroshi/webscriptio-lib/google'
+local g = google.create(config.data.google.keys, true)
+
+local contenttype_json = {["Content-Type"]="application/json;charset=UTF-8"}
+
+local spreadsheetid = request.query.spreadsheetid
+if not spreadsheetid then
+	return g:files(), contenttype_json
+end
+
+local spreadsheet = g:spreadsheet(spreadsheetid)
+
+local sheetname = request.query.sheetname
+if not sheetname then
+	return spreadsheet:get(), contenttype_json
+end
+
+local stringify = require 'abehiroshi/webscriptio-lib/stringify'
+return stringify.encode(spreadsheet:load_ssml(sheetname)), contenttype_json

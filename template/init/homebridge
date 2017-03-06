@@ -1,0 +1,38 @@
+-- homebridgeの初期データ作成
+
+-- Google SpreadSheetから読み込み
+local memory = require 'abehiroshi/webscriptio-lib/memory'
+local google = require 'abehiroshi/webscriptio-lib/google'
+
+local config = memory.create('config')
+local g = google.create(config.data.google.keys, true)
+local sheet = g:spreadsheet(config.data.google.spreadsheetid)
+
+local lustache = require 'lustache'
+local util = require 'abehiroshi/webscriptio-lib/util'
+local stringify = require 'abehiroshi/webscriptio-lib/stringify'
+
+local render_context = {irkit = sheet:load_ssml('irkit')}
+local dump = util.table_convert(
+	sheet:load_ssml('homebridge'),
+	function(value, key)
+		if type(value) == 'string' then
+			value = lustache:render(value, render_context)
+		elseif type(value) == 'table' then
+			value = stringify.decode('table', value)
+		else
+			value = tostring(value)
+		end
+		return value
+	end
+)
+local dump_text = stringify.encode(dump)
+
+local ifttt = require 'abehiroshi/webscriptio-lib/ifttt'
+ifttt.maker {
+	key = config.data.ifttt.maker_key,
+	event = 'homebridge config',
+	value = {dump_text},
+}
+
+return dump_text, {['Content-Type']='application/json; charset=UTF-8'}

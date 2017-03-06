@@ -1,0 +1,1 @@
+return (require 'abehiroshi/webscriptio-lib/logdriver').view(request.query)

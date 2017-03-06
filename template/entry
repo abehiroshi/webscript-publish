@@ -1,0 +1,8 @@
+-- 汎用のHTTP Request受信
+local history_name = request.headers['History-Name'] or 'log'
+(require 'abehiroshi/webscriptio-lib/logdriver').load(history_name)
+local filling = require 'abehiroshi/webscriptio-lib/filling'
+filling.lustache(require 'lustache')
+
+local entrance = require 'abehiroshi/webscriptio-lib/entrance'
+entrance.create('', 'assistant', 'config'):entry(request)

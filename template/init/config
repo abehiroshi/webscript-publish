@@ -1,0 +1,17 @@
+(require 'abehiroshi/webscriptio-lib/logdriver').load('log')
+
+local memory_google = require 'abehiroshi/webscriptio-lib/memory_google'
+
+local mg = memory_google.create('config', {
+		keys = {
+			refresh_token = "{{&REFRESH_TOKEN}}",
+			client_id = "{{&CLIENT_ID}}",
+			client_secret = "{{&CLIENT_SECRET}}",
+		},
+		spreadsheetid = "{{&SPREADSHEET_ID}}",
+	}
+)
+
+local config = mg:load('config')
+
+return config:dump(), {["Content-Type"]="text/plain;charset=UTF-8"}

@@ -1,0 +1,13 @@
+-- アシスタントの初期データ作成
+
+-- Google SpreadSheetから読み込み
+local memory = require 'abehiroshi/webscriptio-lib/memory'
+local google = require 'abehiroshi/webscriptio-lib/google'
+
+local config = memory.create('config')
+local g = google.create(config.data.google.keys, true)
+local sheet = g:spreadsheet(config.data.google.spreadsheetid)
+local assistant = memory.load('assistant', sheet:load_ssml('assistant'))
+
+local stringify = require 'abehiroshi/webscriptio-lib/stringify'
+return stringify.encode(assistant:dump()), {['Content-Type']='application/json; charset=UTF-8'}
