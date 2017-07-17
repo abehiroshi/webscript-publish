@@ -4,3 +4,8 @@ machine:
 dependencies:
   pre:
     - npm install -g npm@3
+deployment:
+  master:
+    branch: master
+    commands:
+      - npm run deploy
